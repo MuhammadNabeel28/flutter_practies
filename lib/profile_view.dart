@@ -7,7 +7,7 @@ class PorfieView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Hello This Is First Data"),
+        backgroundColor: Colors.black,
       ),
       body: Container(
         color: Colors.black,
