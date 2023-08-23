@@ -1,6 +1,23 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 
-List<String> FrinendsList = [];
+// ignore: non_constant_identifier_names
+List<String> FrinendsList = [
+  'Ali..',
+  'Abid...',
+  'Faraz...',
+  'Sohail...',
+  'Nabeel...',
+  'Afaq...',
+  'Jamel...',
+  'Jamal...',
+  'Kabir...',
+  'Sameer...',
+  'Jumbo...',
+  'Qaseel...',
+  'Rubab...',
+];
 List<String> getResults = [];
 
 class FlutterLoop extends StatefulWidget {
@@ -12,6 +29,15 @@ class FlutterLoop extends StatefulWidget {
 
 class _FlutterLoopState extends State<FlutterLoop> {
   TextEditingController secrchController = TextEditingController();
+  TextEditingController friendListController = TextEditingController();
+  TextEditingController friendListUpdateController = TextEditingController();
+  int selectedIndex = -1;
+
+  void removeItem(int index) {
+    setState(() {
+      FrinendsList.removeAt(index);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,6 +79,120 @@ class _FlutterLoopState extends State<FlutterLoop> {
             ],
           ),
         ),
+        body: SafeArea(
+          child: Column(
+            children: [
+              Container(
+                height: 200,
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: NetworkImage(
+                      'https://images.cars.com/cldstatic/wp-content/uploads/toyota-tundra-capstone-2022-01-exterior-front-angle-truck-white-scaled.jpg',
+                    ),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              Expanded(
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  // physics: const NeverScrollableScrollPhysics(),
+                  itemCount: FrinendsList.length,
+                  itemBuilder: (context, index) {
+                    return Container(
+                      margin: const EdgeInsets.only(bottom: 1),
+                      child: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            selectedIndex = index;
+                          });
+                        },
+                        child: ListTile(
+                          tileColor: selectedIndex == index
+                              ? Colors.grey
+                              : Colors.brown,
+                          title: Text(
+                            FrinendsList[index],
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                            ),
+                          ),
+                          trailing: IconButton(
+                            onPressed: () {
+                              removeItem(index);
+                            },
+                            icon: const Icon(
+                              Icons.delete,
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            if (selectedIndex != -1) {
+              friendListUpdateController.text = FrinendsList[selectedIndex];
+            }
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (context) {
+                return AlertDialog(
+                  title: const Text('Edit Record'),
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      TextField(
+                        controller: friendListUpdateController,
+                      ),
+                    ],
+                  ),
+                  actions: [
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      icon: const Icon(Icons.cancel),
+                      label: const Text('Cancel'),
+                    ),
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        setState(() {
+                          FrinendsList[selectedIndex] =
+                              friendListUpdateController.text;
+                        });
+                        friendListUpdateController.clear();
+                        Navigator.pop(context);
+                      },
+                      icon: const Icon(Icons.save),
+                      label: const Text('Save'),
+                    ),
+                  ],
+                );
+              },
+            );
+          },
+          backgroundColor: Colors.blue,
+          child: const Icon(
+            Icons.edit,
+          ),
+        ),
+        bottomNavigationBar: BottomAppBar(
+          color: Colors.blue,
+          child: Container(
+            height: 50.0,
+          ),
+        ),
+        floatingActionButtonLocation:
+            FloatingActionButtonLocation.miniEndDocked,
       ),
     );
   }
